@@ -1,0 +1,8 @@
+(function(root){
+  const currencies=['KRW','JPY','IDR','GBP'];
+  function convert(amount,from,to,fx){if(amount==null||!Number.isFinite(Number(amount)))return null;if(from===to)return Number(amount);const a=fx?.rates?.[from],b=fx?.rates?.[to];return a>0&&b>0?Number(amount)/a*b:null;}
+  function format(amount,currency){return new Intl.NumberFormat('ko-KR',{style:'currency',currency,currencyDisplay:'narrowSymbol',minimumFractionDigits:currency==='GBP'?2:0,maximumFractionDigits:currency==='GBP'?2:0}).format(amount);}
+  function ranges(place,fx){return currencies.map(currency=>{const min=convert(place.priceMin,place.currency||'KRW',currency,fx),max=convert(place.priceMax,place.currency||'KRW',currency,fx);let label='—';if(min!==null&&max!==null)label=min===max?format(min,currency):`${format(min,currency)}–${format(max,currency)}`;else if(min!==null)label=format(min,currency)+'+';else if(max!==null)label='≤ '+format(max,currency);return {currency,label};});}
+  function dateLabel(fx){if(!fx?.dates)return fx?.unavailable?'환율을 불러올 수 없어요 · 연결되면 환산 금액이 표시됩니다.':'환율을 불러오는 중…';const dates=[...new Set(currencies.slice(1).map(c=>fx.dates[c]).filter(Boolean))].sort();const text=dates.map(d=>new Intl.DateTimeFormat('ko-KR',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z'))).join(' / ');return `환율 기준일: ${text} · Frankfurter${fx.stale?' · 저장된 환율':''} · 환전 수수료 제외`;}
+  const api={currencies,convert,format,ranges,dateLabel};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Money=api;
+})(typeof window!=='undefined'?window:globalThis);

@@ -1,0 +1,7 @@
+.git
+.railway
+.env
+data
+node_modules
+test-results
+test

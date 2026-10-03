@@ -1,0 +1,13 @@
+{
+  "name": "geoje-family-trip",
+  "version": "1.0.0",
+  "private": true,
+  "description": "거제도 가족여행 공동 지도와 하루 코스",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.cjs",
+    "test": "node --test test/*.test.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
